@@ -31,8 +31,6 @@ class AM7020Modem:
             if(self.dump_at_cmd):
                 print(cmd, end="")
             return cmd
-        except (KeyboardInterrupt, SystemExit):
-            raise
         except:
             print("decode error !")
             return ""

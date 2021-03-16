@@ -6,7 +6,7 @@
 # @Link   : zack@atticedu.com
 # @Date   : 2020/11/9 上午9:31:20
 
-from time import time, sleep, ctime
+from time import time, sleep
 from am7020.am7020_nb import AM7020NB
 from am7020.am7020_mqtt import AM7020MQTT
 
@@ -69,8 +69,8 @@ def main():
 
         if(time() > pub_data_timer):
             pub_data_timer = time() + UPLOAD_INTERVAL
-            print("publish: ", ctime(), end="")
-            if(mqtt.publish(TEST_TOPIC, str(ctime()))):
+            print("publish: ", time(), end="")
+            if(mqtt.publish(TEST_TOPIC, str(time()))):
                 print("  success")
             else:
                 print("  Fail")

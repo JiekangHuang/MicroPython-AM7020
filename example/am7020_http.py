@@ -6,7 +6,7 @@
 # @Link   : zack@atticedu.com
 # @Date   : 2020/11/9 上午9:31:29
 
-from time import time, sleep, ctime
+from time import time, sleep
 from am7020.am7020_nb import AM7020NB
 from am7020.am7020_http import AM7020HTTP
 
