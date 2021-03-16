@@ -10,9 +10,9 @@ from am7020.am7020_modem import AM7020Modem
 
 
 class AM7020NB(AM7020Modem):
-    def __init__(self, port, baudrate, reset_pin, dump_at_cmd=False):
+    def __init__(self, uart_num, baudrate, reset_pin, dump_at_cmd=False):
         super(AM7020NB, self).__init__(
-            port, baudrate, reset_pin, dump_at_cmd)
+            uart_num, baudrate, reset_pin, dump_at_cmd)
 
     def setAPN(self, apn):
         # Set Default PSD Connection Settings. refer AT CMD 3.2.46

@@ -6,18 +6,17 @@
 # @Link   : zack@atticedu.com
 # @Date   : 2020/11/5 下午1:40:47
 
-import serial
+from machine import UART, Pin
 from time import time, sleep
-from gpiozero import LED
 
 GSM_OK = "OK\r\n"
 GSM_ERROR = "ERROR\r\n"
 
 
 class AM7020Modem:
-    def __init__(self, port, baudrate, reset_pin, dump_at_cmd=False):
-        self._at = serial.Serial(port, baudrate, timeout=0.05)
-        self._reset_pin = LED(reset_pin)
+    def __init__(self, uart_num, baudrate, reset_pin, dump_at_cmd=False):
+        self._at = UART(uart_num, baudrate=baudrate)
+        self._reset_pin = Pin(reset_pin, Pin.OUT)
         self.dump_at_cmd = dump_at_cmd
 
     def atWrite(self, cmd):

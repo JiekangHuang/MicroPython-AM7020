@@ -8,7 +8,6 @@
 
 from random import randint
 from time import time, sleep
-from typing import Dict
 
 CONN_BROKER_TIMEOUT_MS = 90
 NUM_OF_SUB = 30

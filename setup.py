@@ -4,27 +4,26 @@
 # setup.py
 # @Author : Zack Huang ()
 # @Link   : zack@atticedu.com
-# @Date   : 2020/11/11 下午2:03:50
+# @Date   : 2021/03/16 下午2:03:50
 
-import setuptools
+import sdist_upip
+from setuptools import setup
+import sys
+# Remove current dir from sys.path, otherwise setuptools will peek up our
+# module instead of system's.
+sys.path.pop(0)
+sys.path.append("..")
 
-# with open("README.md", "r") as fh:
-    # long_description = fh.read()
-
-setuptools.setup(
-    name="micropython-am7020",
-    version="1.0.0",
-    author="Zack Huang",
-    author_email="zack@atticedu.com",
-    description="AT Command library dedicated to am7020 http mqtt",
-    long_description="",
-    long_description_content_type="text/markdown",
-    url="https://github.com/JiekangHuang/am7020_raspberry",
-    packages=setuptools.find_packages(),
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    python_requires='>=3.6',
+setup(
+    name='micropython-am7020',
+    version='1.0.0',
+    author='Zack Huang',
+    author_email='zack@atticedu.com',
+    description='AT Command library dedicated to am7020 http mqtt',
+    long_description='',
+    url='https://github.com/JiekangHuang/MicroPython-AM7020',
+    license='MIT',
+    cmdclass={'sdist': sdist_upip.sdist},
+    package_dir={'micropython-am7020': 'am7020'},
+    packages=['micropython-am7020']
 )
