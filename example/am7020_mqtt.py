@@ -7,8 +7,8 @@
 # @Date   : 2020/11/9 上午9:31:20
 
 from time import time, sleep, ctime
-from sim7020.sim7020_nb import SIM7020NB
-from sim7020.sim7020_mqtt import SIM7020MQTT
+from am7020.am7020_nb import AM7020NB
+from am7020.am7020_mqtt import AM7020MQTT
 
 
 apn = "twm.nbiot"
@@ -21,8 +21,8 @@ TEST_TOPIC = "temp/humidity"
 UPLOAD_INTERVAL = 60
 
 
-nb = SIM7020NB("/dev/ttyS0", 115200, 18)
-mqtt = SIM7020MQTT(nb)
+nb = AM7020NB(2, 115200, 5)
+mqtt = AM7020MQTT(nb)
 
 
 def nbConnect():

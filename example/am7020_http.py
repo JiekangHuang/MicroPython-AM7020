@@ -7,8 +7,8 @@
 # @Date   : 2020/11/9 上午9:31:29
 
 from time import time, sleep, ctime
-from sim7020.sim7020_nb import SIM7020NB
-from sim7020.sim7020_http import SIM7020HTTP
+from am7020.am7020_nb import AM7020NB
+from am7020.am7020_http import AM7020HTTP
 
 apn = "twm.nbiot"
 band = 28
@@ -17,8 +17,8 @@ HTTP_GET_API = "//anything"
 HTTP_POST_API = HTTP_GET_API
 UPLOAD_INTERVAL = 60
 
-nb = SIM7020NB("/dev/ttyS0", 115200, 18)
-http = SIM7020HTTP(nb, HTTP_SERVER)
+nb = AM7020NB(2, 115200, 5)
+http = AM7020HTTP(nb, HTTP_SERVER)
 
 
 def nbConnect():

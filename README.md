@@ -51,8 +51,8 @@
  ## HTTP 教學說明
  Declare nb and http client instance using:
  ```Python
- nb = SIM7020NB(uart_num=2, baudrate=115200, reset_pin=5)
- http = SIM7020HTTP(nb, HTTP_SERVER)
+ nb = AM7020NB(uart_num=2, baudrate=115200, reset_pin=5)
+ http = AM7020HTTP(nb, HTTP_SERVER)
  ```
  Initialize nb and connect to NBIOT base station:
  ```Python
