@@ -16,7 +16,7 @@ sys.path.append("..")
 
 setup(
     name='micropython-am7020',
-    version='1.0.1',
+    version='1.0.3',
     author='Zack Huang',
     author_email='zack@atticedu.com',
     description='AT Command library dedicated to am7020 http mqtt',

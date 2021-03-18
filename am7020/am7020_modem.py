@@ -14,8 +14,10 @@ GSM_ERROR = "ERROR\r\n"
 
 
 class AM7020Modem:
-    def __init__(self, uart_num, baudrate, reset_pin, dump_at_cmd=False):
-        self._at = UART(uart_num, baudrate=baudrate)
+    def __init__(self, uart_num, baudrate, tx_pin, rx_pin, reset_pin, dump_at_cmd=False):
+        self._at = UART(uart_num, baudrate=baudrate, tx=Pin(
+            tx_pin), rx=Pin(rx_pin), timeout=50)
+        Pin(rx_pin, mode=Pin.ALT, pull=None, alt=2)
         self._reset_pin = Pin(reset_pin, Pin.OUT)
         self.dump_at_cmd = dump_at_cmd
 

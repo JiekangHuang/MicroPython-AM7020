@@ -21,7 +21,7 @@ TEST_TOPIC = "temp/humidity"
 UPLOAD_INTERVAL = 60
 
 
-nb = AM7020NB(2, 115200, 5)
+nb = AM7020NB(0, 115200, 16, 17, 5)
 mqtt = AM7020MQTT(nb)
 
 
