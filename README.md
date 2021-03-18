@@ -19,7 +19,7 @@
  ## MQTT 教學說明
  Declare nb and mqtt client instance using:
  ```Python
- nb = AM7020NB(uart_num=2, baudrate=115200, reset_pin=5)
+ nb = AM7020NB(uart_num=0, baudrate=115200, tx_pin=16, rx_pin=17, reset_pin=5, dump_at_cmd=False)
  mqtt = AM7020MQTT(nb)
  ```
  Initialize nb and connect to NBIOT base station:
@@ -51,7 +51,7 @@
  ## HTTP 教學說明
  Declare nb and http client instance using:
  ```Python
- nb = AM7020NB(uart_num=2, baudrate=115200, reset_pin=5)
+ nb = AM7020NB(uart_num=0, baudrate=115200, tx_pin=16, rx_pin=17, reset_pin=5, dump_at_cmd=False)
  http = AM7020HTTP(nb, HTTP_SERVER)
  ```
  Initialize nb and connect to NBIOT base station:
