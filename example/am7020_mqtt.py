@@ -6,7 +6,7 @@
 # @Link   : zack@atticedu.com
 # @Date   : 2020/11/9 上午9:31:20
 
-from time import time, sleep
+from utime import ticks_ms, sleep_ms
 from am7020.am7020_nb import AM7020NB
 from am7020.am7020_mqtt import AM7020MQTT
 
@@ -18,10 +18,10 @@ PORT = 1883
 MQTT_USERNAME = ""
 MQTT_PASSWORD = ""
 TEST_TOPIC = "temp/humidity"
-UPLOAD_INTERVAL = 60
+UPLOAD_INTERVAL_MS = 60000
 
 
-nb = AM7020NB(0, 115200, 16, 17, 5)
+nb = AM7020NB(1, 9600, 4, 5, 3, False)
 mqtt = AM7020MQTT(nb)
 
 
@@ -33,7 +33,7 @@ def nbConnect():
     print("Waiting for network...")
     while(not nb.waitForNetwork()):
         print(".")
-        sleep(5)
+        sleep_ms(5000)
     print(" success")
 
 
@@ -61,16 +61,16 @@ def main():
     chk_net_timer = 0
     pub_data_timer = 0
     while(True):
-        if(time() > chk_net_timer):
-            chk_net_timer = time() + 10
+        if(ticks_ms() > chk_net_timer):
+            chk_net_timer = ticks_ms() + 10000
             if(not nb.chkNet()):
                 nbConnect()
             reConnBroker()
 
-        if(time() > pub_data_timer):
-            pub_data_timer = time() + UPLOAD_INTERVAL
-            print("publish: ", time(), end="")
-            if(mqtt.publish(TEST_TOPIC, str(time()))):
+        if(ticks_ms() > pub_data_timer):
+            pub_data_timer = ticks_ms() + UPLOAD_INTERVAL_MS
+            print("publish: ", pub_data_timer, end="")
+            if(mqtt.publish(TEST_TOPIC, str(pub_data_timer))):
                 print("  success")
             else:
                 print("  Fail")

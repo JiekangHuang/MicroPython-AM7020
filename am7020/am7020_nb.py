@@ -28,7 +28,7 @@ class AM7020NB(AM7020Modem):
         # Enter PIN. refer AT CMD 3.2.11
         self.sendAT("+CPIN?")
         status = self.waitResponse(
-            1, "READY", "SIM PIN", "SIM PUK", "NOT INSERTED", "NOT READY")
+            1000, "READY", "SIM PIN", "SIM PUK", "NOT INSERTED", "NOT READY")
         self.waitResponse()
         return (status == 1)
 
@@ -51,7 +51,7 @@ class AM7020NB(AM7020Modem):
     def chkNet(self):
         # EPS Network Registration Status. refer AT CMD 3.2.47
         self.sendAT("+CEREG?")
-        self.waitResponse(1, "+CEREG: 0,")
+        self.waitResponse(1000, "+CEREG: 0,")
         status = self.streamGetIntBefore('\n')
         self.waitResponse()
         return (status == 1)
@@ -63,7 +63,7 @@ class AM7020NB(AM7020Modem):
         if(bs_code > 0):
             # Operator Selection. refer AT CMD 3.2.10
             self.sendAT("+COPS=1,2,\"", bs_code, "\"")
-            return (self.waitResponse(120) == 1)
+            return (self.waitResponse(120000) == 1)
         return True
 
     def waitForNetwork(self):

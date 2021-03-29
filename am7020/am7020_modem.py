@@ -7,7 +7,7 @@
 # @Date   : 2020/11/5 下午1:40:47
 
 from machine import UART, Pin
-from time import time, sleep
+from utime import ticks_ms, sleep_ms
 
 GSM_OK = "OK\r\n"
 GSM_ERROR = "ERROR\r\n"
@@ -29,27 +29,32 @@ class AM7020Modem:
 
     def atRead(self, numChars=1):
         try:
-            cmd = self._at.read(numChars).decode("utf-8")
-            if(self.dump_at_cmd):
-                print(cmd, end="")
-            return cmd
-        except:
-            print("decode error !")
+            cmd = self._at.read(numChars)
+            if(len(cmd) > 0):
+                cmd = cmd.decode("utf-8")
+                if(self.dump_at_cmd):
+                    print(cmd, end="")
+                return cmd
+            return ""
+        except TypeError:
+            return ""
+        except Exception as e:
+            print(e)
             return ""
 
     def restart(self):
         self._reset_pin.off()
-        sleep(0.5)
+        sleep_ms(500)
         self._reset_pin.on()
-        sleep(5)
+        sleep_ms(500)
 
-    def testAT(self, timeout_s=10):
-        startTime = time()
-        while(time() - startTime < timeout_s):
+    def testAT(self, timeout_ms=10000):
+        startTime = ticks_ms()
+        while(ticks_ms() - startTime < timeout_ms):
             self.sendAT()
-            if(self.waitResponse(0.2) == 1):
+            if(self.waitResponse(200) == 1):
                 return True
-            sleep(0.1)
+            sleep_ms(100)
         return False
 
     def streamWrite(self, *args):
@@ -68,43 +73,43 @@ class AM7020Modem:
     def streamRead(self):
         self.atRead()
 
-    def streamGetLength(self, numChars, timeout_s=1):
-        startTime = time()
+    def streamGetLength(self, numChars, timeout_ms=1000):
+        startTime = ticks_ms()
         data = ""
-        while(time() - startTime < timeout_s):
+        while(ticks_ms() - startTime < timeout_ms):
             data += self.atRead(numChars)
             if(data != "" and len(data) == numChars):
                 return data
 
-    def streamGetIntBefore(self, lastChar, timeout_s=1):
-        startTime = time()
+    def streamGetIntBefore(self, lastChar, timeout_ms=1000):
+        startTime = ticks_ms()
         data = ""
-        while(time() - startTime < timeout_s):
+        while(ticks_ms() - startTime < timeout_ms):
             data += self.atRead()
             if(data != "" and data.endswith(lastChar)):
                 return int(data[:-1])
         return -9999
 
-    def streamGetStringBefore(self, lastChar, timeout_s=1):
-        startTime = time()
+    def streamGetStringBefore(self, lastChar, timeout_ms=1000):
+        startTime = ticks_ms()
         data = ""
-        while(time() - startTime < timeout_s):
+        while(ticks_ms() - startTime < timeout_ms):
             data += self.atRead()
             if(data != "" and data.endswith(lastChar)):
                 return data[:-1]
         return ""
 
-    def streamSkipUntil(self, c, timeout_s=1):
-        startTime = time()
-        while(time() - startTime < timeout_s):
+    def streamSkipUntil(self, c, timeout_ms=1000):
+        startTime = ticks_ms()
+        while(ticks_ms() - startTime < timeout_ms):
             ch = self.atRead()
             if(ch == c):
                 return True
         return False
 
-    def waitResponse(self, timeout_s=1, r1=GSM_OK, r2=GSM_ERROR, r3=None, r4=None, r5=None):
+    def waitResponse(self, timeout_ms=1000, r1=GSM_OK, r2=GSM_ERROR, r3=None, r4=None, r5=None):
         index = 0
-        startTime = time()
+        startTime = ticks_ms()
         data = ""
         while(True):
             data += self.atRead()
@@ -123,6 +128,38 @@ class AM7020Modem:
             elif(r5 and data.endswith(r5)):
                 index = 5
                 break
-            if(time()-startTime > timeout_s):
+            if(ticks_ms()-startTime > timeout_ms):
+                break
+        return index
+    
+    def waitURCResponse(self, timeout_ms=1000, r1=GSM_OK, r2=GSM_ERROR, r3=None, r4=None, r5=None):
+        index = 0
+        startTime = ticks_ms()
+        data = ""
+        pre_data = ""
+        while(True):
+            data += self.atRead()
+            if(data == ""):
+                break
+            elif(data != pre_data):
+                pre_data = data
+                startTime = ticks_ms()
+
+            if(r1 and data.endswith(r1)):
+                index = 1
+                break
+            elif(r2 and data.endswith(r2)):
+                index = 2
+                break
+            elif(r3 and data.endswith(r3)):
+                index = 3
+                break
+            elif(r4 and data.endswith(r4)):
+                index = 4
+                break
+            elif(r5 and data.endswith(r5)):
+                index = 5
+                break
+            if(ticks_ms()-startTime > timeout_ms):
                 break
         return index

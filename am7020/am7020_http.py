@@ -6,7 +6,7 @@
 # @Link   : zack@atticedu.com
 # @Date   : 2020/11/7 下午7:22:38
 
-from time import time, sleep
+from utime import ticks_ms, sleep_ms
 
 CONN_BROKER_TIMEOUT_MS = 90
 
@@ -24,12 +24,12 @@ class AM7020HTTP():
         # Create a HTTP Client Instance. refer AT CMD 8.2.1
         self.nb.sendAT("+CHTTPCREATE=\"http://", self.host, "\",\"",
                        self.username, "\",\"", self.password, "\"")
-        return (self.nb.waitResponse(30, "+CHTTPCREATE: 0") == 1 and self.nb.waitResponse() == 1)
+        return (self.nb.waitResponse(30000, "+CHTTPCREATE: 0") == 1 and self.nb.waitResponse() == 1)
 
     def chkHTTPChOpen(self):
         # Create a HTTP Client Instance. refer AT CMD 8.2.1
         self.nb.sendAT("+CHTTPCREATE?")
-        if(self.nb.waitResponse(10, "+CHTTPCREATE: 0,") == 1):
+        if(self.nb.waitResponse(10000, "+CHTTPCREATE: 0,") == 1):
             used_state = self.nb.streamGetIntBefore(',')
             self.nb.waitResponse()
             return (used_state == 1)
@@ -37,12 +37,12 @@ class AM7020HTTP():
     def connHTTP(self):
         # Establish the HTTP(S) Connection. refer AT CMD 8.2.3
         self.nb.sendAT("+CHTTPCON=0")
-        return (self.nb.waitResponse(30) == 1)
+        return (self.nb.waitResponse(30000) == 1)
 
     def chkHTTPChConn(self):
         # Establish the HTTP(S) Connection. refer AT CMD 8.2.3
         self.nb.sendAT("+CHTTPCON?")
-        if(self.nb.waitResponse(10, "+CHTTPCON: 0,") == 1):
+        if(self.nb.waitResponse(10000, "+CHTTPCON: 0,") == 1):
             conn_state = self.nb.streamGetIntBefore(',')
             self.nb.waitResponse()
             return (conn_state == 1)
@@ -50,18 +50,18 @@ class AM7020HTTP():
     def closeHTTPCh(self):
         # Destroy the HTTP(S) Client Instance. refer AT CMD 8.2.5
         self.nb.sendAT("+CHTTPDESTROY=0")
-        return (self.nb.waitResponse(2) == 1)
+        return (self.nb.waitResponse(2000) == 1)
 
     def disconHTTPCh(self):
         # Close the HTTP(S) Connection. refer AT CMD 8.2.4
         self.nb.sendAT("+CHTTPDISCON=0")
-        return (self.nb.waitResponse(2) == 1)
+        return (self.nb.waitResponse(2000) == 1)
 
     def sendHTTPData(self, method, path, header, content_type, content_string):
         # Send HTTP(S) Package. refer AT CMD 8.2.6
         self.nb.sendAT("+CHTTPSEND=0,", method, ",\"", path, "\",\"",
                        header, "\",\"", content_type, "\",\"", content_string, "\"")
-        return (self.nb.waitResponse(10) == 1)
+        return (self.nb.waitResponse(10000) == 1)
 
     def startRequest(self, path, method, headers="", content_type="", body=""):
         if(self.connServer()):
@@ -72,7 +72,7 @@ class AM7020HTTP():
             self.sendHTTPData(method, path, self.stringToHex(
                 temp_header), content_type, self.stringToHex(body))
             # Header of the Response from Host. refer AT CMD 8.2.13
-            if(self.nb.waitResponse(30, "+CHTTPNMIH: 0,") == 1):
+            if(self.nb.waitResponse(30000, "+CHTTPNMIH: 0,") == 1):
                 self.ParseResponseMsg()
                 self.endRequest()
                 return True
@@ -90,11 +90,11 @@ class AM7020HTTP():
         return (str(key) + ":" + str(value) + "\n")
 
     def connServer(self):
-        endTime = time() + CONN_BROKER_TIMEOUT_MS
-        while(time() < endTime):
+        endTime = ticks_ms() + CONN_BROKER_TIMEOUT_MS
+        while(ticks_ms() < endTime):
             if(not self.chkHTTPChOpen()):
                 # Delay is used here because the AM7020 module has a bug.
-                sleep(1)
+                sleep_ms(1000)
                 self.closeHTTPCh()
                 self.newHTTP()
                 continue
@@ -122,7 +122,7 @@ class AM7020HTTP():
             data += self.nb.atRead()
 
         # Content of The Response from Host. refer AT CMD 8.2.14
-        if(self.nb.waitResponse(5, "+CHTTPNMIC: 0,") == 1):
+        if(self.nb.waitResponse(5000, "+CHTTPNMIC: 0,") == 1):
             self.nb.streamSkipUntil(',')
             self.nb.streamSkipUntil(',')
             self.body = ""
